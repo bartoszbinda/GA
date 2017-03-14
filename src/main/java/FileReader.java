@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 public class FileReader {
 
@@ -15,7 +16,7 @@ public class FileReader {
     private double crossoverRate;
     private String fileName;
     private Node[] nodes;
-
+    private DefaultDirectedWeightedGraph <String, DefaultEdge> g = new DefaultDirectedWeightedGraph<>(DefaultEdge.class);
     public FileReader(String fileName) {
         numNodes = 0;
         mutationRate = 0;
@@ -77,30 +78,38 @@ public class FileReader {
 
 
     public void read() {
-        System.out.println("Please enter the number of nodes: ");
         Scanner sc = new Scanner(System.in);
-        numNodes = sc.nextInt();
         System.out.println("Please enter mutation rate: ");
         mutationRate = sc.nextDouble();
+        sc.nextLine();
         System.out.println("Please enter the crossover rate: ");
         crossoverRate = sc.nextDouble();
-            try {
+        sc.nextLine();
+        try {
             BufferedReader in = new BufferedReader(new java.io.FileReader("./" + fileName));
             String line;
             try {
                 while ((line = in.readLine()) != null) {
                     String[] parseArray = line.split(" ");
-
+                    g.addVertex(parseArray[0]);
+                    g.addVertex(parseArray[2]);
+                    g.addEdge(parseArray[0],parseArray[2]);
+                    DefaultEdge edge = g.getEdge(parseArray[0], parseArray[1]);
+                    g.setEdgeWeight(edge, Integer.parseInt(parseArray[1]));
                     curLine++;
+                    System.out.println("Edge weight: " + edge);
 
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.toString());
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!!");
+            System.exit(0);
+
         }
-            catch (FileNotFoundException e) {
-                System.out.println("File not found!!");
-            }
+        this.numNodes = curLine;
+    }
 
 
     public double getCrossoverRate() {

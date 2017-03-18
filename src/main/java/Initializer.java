@@ -12,6 +12,8 @@ public class Initializer {
     private int arrayCount;
     private double crossoverRate;
     private String fileName;
+    private Object[] vertexSet;
+    private Object[] edgeSet;
     SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph =
             new SimpleDirectedWeightedGraph<String, DefaultWeightedEdge>
                     (DefaultWeightedEdge.class);
@@ -90,9 +92,11 @@ public class Initializer {
                         graph.setEdgeWeight(edge, Integer.parseInt(parseArray[1]));
                         curLine++;
 
+
                     }
                     this.numNodes = curLine;
-
+                    this.vertexSet = graph.vertexSet().toArray();
+                    this.edgeSet = graph.edgeSet().toArray();
                     in.close();
 
                 } catch (Exception e) {

@@ -7,6 +7,6 @@ public class Main {
         GeneticAlgorithm ga = new GeneticAlgorithm();
         ga.initializePopulation(numNodes, numPop);
         ga.printPopulationArray();
-
+        ga.fitnessFunction(ga.getPopulationArray(), file.getGraph());
     }
 }

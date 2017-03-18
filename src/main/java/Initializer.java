@@ -1,25 +1,18 @@
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Initializer {
 
+    int numVertices;
+    AdjacencyMatrixGraph graph;
     private int numNodes;
     private double mutationRate;
     private int curLine;
     private int arrayCount;
     private double crossoverRate;
     private String fileName;
-    private Set<String> vertexSet;
-    private Set<DefaultWeightedEdge> edgeSet;
-    SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph =
-            new SimpleDirectedWeightedGraph<>
-                    (DefaultWeightedEdge.class);
-
+    private int endNode;
     public Initializer(String fileName) {
         numNodes = 0;
         mutationRate = 0;
@@ -34,6 +27,7 @@ public class Initializer {
         return crossoverRate >= 0 && crossoverRate <= 1.0 && mutationRate >= 0 && mutationRate <= 1;
     }
 
+
     public void read() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Please enter mutation rate: ");
@@ -42,6 +36,13 @@ public class Initializer {
         System.out.println("Please enter the crossover rate: ");
         crossoverRate = sc.nextDouble();
         sc.nextLine();
+        System.out.println("Please enter the number of vertices: ");
+        numVertices = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Enter the end node");
+        endNode = sc.nextInt();
+        sc.nextLine();
+        graph = new AdjacencyMatrixGraph(numVertices, Graph.GraphType.DIRECTED);
         sc.close();
         if (validate(crossoverRate, mutationRate)) {
             try {
@@ -50,25 +51,22 @@ public class Initializer {
                 try {
                     while ((line = in.readLine()) != null) {
                         String[] parseArray = line.split(" ");
-
-                        graph.addVertex(parseArray[0]);
-                        graph.addVertex(parseArray[2]);
-                        DefaultWeightedEdge edge = graph.addEdge(parseArray[0], parseArray[2]);
-                        graph.setEdgeWeight(edge, Integer.parseInt(parseArray[1]));
+                        graph.addEdge(Integer.parseInt(parseArray[0]), Integer.parseInt(parseArray[2]), Integer.parseInt(parseArray[1]));
                         curLine++;
 
 
                     }
                     this.numNodes = curLine;
-                    this.vertexSet = graph.vertexSet();
-                    this.edgeSet = graph.edgeSet();
+//                    this.vertexSet = graph.vertexSet();
+//                    this.edgeSet = graph.edgeSet();
                     in.close();
                     ///TODO: iterowanie sie i dostanie kazdego vertixa
-    //                    for(DefaultWeightedEdge edge : edgeSet){
-    //
-    //                        System.out.println(graph.getEdgeSource(edge));
-    //                        System.out.println(graph.getEdgeTarget(edge));
-    //                    }
+//                        for(DefaultWeightedEdge edge : edgeSet){
+//                            System.out.println(edge.toString());
+//                        }
+//                        for(String vertix : vertexSet){
+//                            System.out.println(vertix);
+//                        }
 
                 } catch (Exception e) {
                     System.out.println(e.toString());
@@ -82,6 +80,7 @@ public class Initializer {
             System.out.println("Wrong format of inputs! CrossOver and mutation rate must be >= 0 and <= 1!");
             System.exit(0);
         }
+
     }
 
     public double getCrossoverRate() {
@@ -92,21 +91,21 @@ public class Initializer {
         this.crossoverRate = crossoverRate;
     }
 
-    public Set<String> getVertexSet() {
-        return vertexSet;
-    }
-
-    public Set<DefaultWeightedEdge> getEdgeSet() {
-        return edgeSet;
-    }
+//    public Set<Integer> getVertexSet() {
+//        return vertexSet;
+//    }
+//
+//    public Set<DefaultWeightedEdge> getEdgeSet() {
+//        return edgeSet;
+//    }
 
     public int getNumNodes() {
         return numNodes;
     }
 
-    public SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> getGraph() {
-        return graph;
-    }
+//    public SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> getGraph() {
+//        return graph;
+//    }
 
     public void setNumNodes(int numNodes) {
         this.numNodes = numNodes;
@@ -136,4 +135,11 @@ public class Initializer {
         this.arrayCount = arrayCount;
     }
 
+    public AdjacencyMatrixGraph getGraph() {
+        return graph;
+    }
+
+    public int getEndNode() {
+        return this.endNode;
+    }
 }

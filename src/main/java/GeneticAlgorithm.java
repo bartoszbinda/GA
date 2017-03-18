@@ -1,25 +1,19 @@
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
-import org.jgrapht.alg.ConnectivityInspector;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-
 public class GeneticAlgorithm {
-    Set<String> vertexSet;
-    private Set<DefaultWeightedEdge> edgeSet;
+
+
     private int numberOfIteration;
     private ArrayList<String[]> populationArray = new ArrayList<>();
-    ConnectivityInspector connect;
-    SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph;
+    private AdjacencyMatrixGraph graph;
+    private int endNode;
 
-    GeneticAlgorithm(Set<String> vertexSet, Set<DefaultWeightedEdge> edgeSet,     SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph) {
+    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode) {
         this.numberOfIteration = 0;
-        this.edgeSet = edgeSet;
-        this.vertexSet = vertexSet;
         this.graph = graph;
-        this.connect = new ConnectivityInspector(graph);
+        this.endNode = endNode;
+
     }
 
     ArrayList<String[]> getPopulationArray() {
@@ -52,21 +46,29 @@ public class GeneticAlgorithm {
         return intArray;
     }
 
-    int[] fitnessFunction(ArrayList<String[]> popArray, SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph) {
+    int[] fitnessFunction(ArrayList<String[]> popArray) {
         int[] res = new int[popArray.size()];
+        System.out.println("Result table:");
+        int counter = 0;
         for (String[] binaryString : popArray) {
             int[] intArray = convertToIntArray(binaryString);
+            int fitness = 0;
             for (int j = 0; j < intArray.length - 1; j++) {
-                if(connect.pathExists(Integer.toString(intArray[j]), Integer.toString(intArray[j+1]))) {
-                    System.out.println("Path exists");
+                int weight = graph.getWeightedEdge(intArray[j], intArray[j + 1]);
+                if (intArray[j] == endNode) {
+                    break;
+                } else if (weight > 0) {
+                    fitness += weight;
+                } else {
+                    fitness += 1000;
                 }
-                else {
-                    System.out.println("Path not exists");
-                }
-
             }
+            res[counter] = fitness;
+            counter++;
         }
+        for (int i : res) System.out.print(i + "\n");
         return res;
+
     }
 
     void printPopulationArray() {

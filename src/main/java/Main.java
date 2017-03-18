@@ -1,7 +1,12 @@
 public class Main {
 
     public static void main(String[] args) {
-        FileReader file = new FileReader("data");
-        file.read();
+        Initializer file = new Initializer("data.txt");
+        int numNodes = file.getNumNodes();
+        int numPop = 18;
+        GeneticAlgorithm ga = new GeneticAlgorithm();
+        ga.initializePopulation(numNodes, numPop);
+        ga.printPopulationArray();
+
     }
 }

@@ -1,26 +1,23 @@
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.StringTokenizer;
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.graph.DefaultDirectedGraph;
 
-public class FileReader {
+public class Initializer {
 
     private int numNodes;
     private double mutationRate;
     private int curLine;
-    private StringTokenizer st;
     private int arrayCount;
     private double crossoverRate;
     private String fileName;
-    private Node[] nodes;
-    private DefaultDirectedWeightedGraph <String, DefaultEdge> g = new DefaultDirectedWeightedGraph<>(DefaultEdge.class);
-    public FileReader(String fileName) {
+    SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph =
+            new SimpleDirectedWeightedGraph<String, DefaultWeightedEdge>
+                    (DefaultWeightedEdge.class);
+    public Initializer(String fileName) {
         numNodes = 0;
         mutationRate = 0;
-        Node[] nodes = new Node[0];
         curLine = 1;
         arrayCount = 0;
         this.fileName=fileName;
@@ -30,6 +27,9 @@ public class FileReader {
 
     public int getNumNodes() {
         return numNodes;
+    }
+    public SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> getGraph() {
+        return graph;
     }
 
     public void setNumNodes(int numNodes) {
@@ -44,28 +44,12 @@ public class FileReader {
         this.mutationRate = mutationRate;
     }
 
-    public Node[] getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(Node[] nodes) {
-        this.nodes = nodes;
-    }
-
     public int getCurLine() {
         return curLine;
     }
 
     public void setCurLine(int curLine) {
         this.curLine = curLine;
-    }
-
-    public StringTokenizer getSt() {
-        return st;
-    }
-
-    public void setSt(StringTokenizer st) {
-        this.st = st;
     }
 
     public int getArrayCount() {
@@ -85,21 +69,25 @@ public class FileReader {
         System.out.println("Please enter the crossover rate: ");
         crossoverRate = sc.nextDouble();
         sc.nextLine();
+        sc.close();
         try {
             BufferedReader in = new BufferedReader(new java.io.FileReader("./" + fileName));
             String line;
             try {
                 while ((line = in.readLine()) != null) {
                     String[] parseArray = line.split(" ");
-                    g.addVertex(parseArray[0]);
-                    g.addVertex(parseArray[2]);
-                    g.addEdge(parseArray[0],parseArray[2]);
-                    DefaultEdge edge = g.getEdge(parseArray[0], parseArray[1]);
-                    g.setEdgeWeight(edge, Integer.parseInt(parseArray[1]));
+
+                    graph.addVertex(parseArray[0]);
+                    graph.addVertex(parseArray[2]);
+                    DefaultWeightedEdge edge = graph.addEdge(parseArray[0], parseArray[2]);
+                    graph.setEdgeWeight(edge ,Integer.parseInt(parseArray[1]));
                     curLine++;
-                    System.out.println("Edge weight: " + edge);
 
                 }
+                this.numNodes = curLine;
+
+                in.close();
+
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
@@ -108,9 +96,7 @@ public class FileReader {
             System.exit(0);
 
         }
-        this.numNodes = curLine;
     }
-
 
     public double getCrossoverRate() {
         return crossoverRate;

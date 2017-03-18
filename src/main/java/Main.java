@@ -4,7 +4,7 @@ public class Main {
         Initializer file = new Initializer("data.txt");
         int numNodes = file.getNumNodes();
         int numPop = 18;
-        GeneticAlgorithm ga = new GeneticAlgorithm();
+        GeneticAlgorithm ga = new GeneticAlgorithm(file.getVertexSet(), file.getEdgeSet(), file.getGraph());
         ga.initializePopulation(numNodes, numPop);
         ga.printPopulationArray();
         ga.fitnessFunction(ga.getPopulationArray(), file.getGraph());

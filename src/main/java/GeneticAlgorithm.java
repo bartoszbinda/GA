@@ -55,6 +55,9 @@ public class GeneticAlgorithm {
             int fitness = 0;
             for (int j = 0; j < intArray.length - 1; j++) {
                 int weight = graph.getWeightedEdge(intArray[j], intArray[j + 1]);
+                if (intArray[0] == endNode) {
+                    fitness += 10000000;
+                }
                 if (intArray[j] == endNode) {
                     break;
                 } else if (weight > 0) {

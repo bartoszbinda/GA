@@ -3,6 +3,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public class GeneticAlgorithm {
+    private int numberOfIteration = 0;
     private ArrayList<String[]> populationArray = new ArrayList<>();
     void initializePopulation(int numNodes, int amountOfPopulations){
         int count = 0;
@@ -15,8 +16,10 @@ public class GeneticAlgorithm {
             populationArray.add(population);
             count++;
         }
+        this.numberOfIteration++;
     }
     void printPopulationArray() {
+        System.out.println("Number of iteration: " + this.numberOfIteration);
         for(int i = 0; i < populationArray.size(); i++){
             String[] arr = populationArray.get(i);
             System.out.print(arr[0]);

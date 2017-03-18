@@ -24,6 +24,12 @@ public class Initializer {
         crossoverRate = 0.1;
         read();
     }
+    private boolean validate(double crossoverRate, double mutationRate){
+        if(crossoverRate>=0 && crossoverRate<=1.0 && mutationRate >= 0 && mutationRate<=1){
+            return true;
+        }
+        return false;
+    }
 
     public int getNumNodes() {
         return numNodes;
@@ -70,31 +76,37 @@ public class Initializer {
         crossoverRate = sc.nextDouble();
         sc.nextLine();
         sc.close();
-        try {
-            BufferedReader in = new BufferedReader(new java.io.FileReader("./" + fileName));
-            String line;
+        if( validate(crossoverRate,mutationRate)) {
             try {
-                while ((line = in.readLine()) != null) {
-                    String[] parseArray = line.split(" ");
+                BufferedReader in = new BufferedReader(new java.io.FileReader("./" + fileName));
+                String line;
+                try {
+                    while ((line = in.readLine()) != null) {
+                        String[] parseArray = line.split(" ");
 
-                    graph.addVertex(parseArray[0]);
-                    graph.addVertex(parseArray[2]);
-                    DefaultWeightedEdge edge = graph.addEdge(parseArray[0], parseArray[2]);
-                    graph.setEdgeWeight(edge ,Integer.parseInt(parseArray[1]));
-                    curLine++;
+                        graph.addVertex(parseArray[0]);
+                        graph.addVertex(parseArray[2]);
+                        DefaultWeightedEdge edge = graph.addEdge(parseArray[0], parseArray[2]);
+                        graph.setEdgeWeight(edge, Integer.parseInt(parseArray[1]));
+                        curLine++;
 
+                    }
+                    this.numNodes = curLine;
+
+                    in.close();
+
+                } catch (Exception e) {
+                    System.out.println(e.toString());
                 }
-                this.numNodes = curLine;
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found!!");
+                System.exit(0);
 
-                in.close();
-
-            } catch (Exception e) {
-                System.out.println(e.toString());
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found!!");
+        }
+        else {
+            System.out.println("Wrong format of inputs! CrossOver and mutation rate must be >= 0 and <= 1!");
             System.exit(0);
-
         }
     }
 

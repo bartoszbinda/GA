@@ -3,6 +3,7 @@ import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Initializer {
 
@@ -12,8 +13,8 @@ public class Initializer {
     private int arrayCount;
     private double crossoverRate;
     private String fileName;
-    private Object[] vertexSet;
-    private Object[] edgeSet;
+    private Set<String> vertexSet;
+    private Set<DefaultWeightedEdge> edgeSet;
     SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> graph =
             new SimpleDirectedWeightedGraph<String, DefaultWeightedEdge>
                     (DefaultWeightedEdge.class);
@@ -95,9 +96,15 @@ public class Initializer {
 
                     }
                     this.numNodes = curLine;
-                    this.vertexSet = graph.vertexSet().toArray();
-                    this.edgeSet = graph.edgeSet().toArray();
+                    this.vertexSet = graph.vertexSet();
+                    this.edgeSet = graph.edgeSet();
                     in.close();
+                    ///TODO: iterowanie sie i dostanie kazdego vertixa
+//                    for(DefaultWeightedEdge edge : edgeSet){
+//
+//                        System.out.println(graph.getEdgeSource(edge));
+//                        System.out.println(graph.getEdgeTarget(edge));
+//                    }
 
                 } catch (Exception e) {
                     System.out.println(e.toString());

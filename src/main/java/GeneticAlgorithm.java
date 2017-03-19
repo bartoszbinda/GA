@@ -53,6 +53,7 @@ public class GeneticAlgorithm {
         System.out.println("Result table:");
         int counter = 0;
         int min = Integer.MAX_VALUE;
+        int minIndex = 0;
         for (String[] binaryString : popArray) {
             int[] intArray = convertToIntArray(binaryString);
             int fitness = 0;
@@ -70,11 +71,16 @@ public class GeneticAlgorithm {
                 }
             }
             res[counter] = fitness;
-            if (fitness <= min) min = fitness;
+            if (fitness <= min) {
+                min = fitness;
+                minIndex = counter;
+            }
+
             counter++;
         }
         for (int i : res) System.out.print(i + "\n");
         System.out.println("Minimum fitness: " + min);
+        System.out.println("Minimum index: " + minIndex);
 
         return res;
 
@@ -82,11 +88,14 @@ public class GeneticAlgorithm {
 
     void printPopulationArray() {
         System.out.println("Number of iteration: " + this.numberOfIteration);
+        int counter = 0;
         for (String[] arr : populationArray) {
+            System.out.println("Chromosome no : " + counter);
             System.out.print(arr[0]);
             for (int j = 1; j < arr.length; j++) {
                 System.out.print(" : " + arr[j]);
             }
+            counter++;
             System.out.println();
         }
     }

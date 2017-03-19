@@ -52,13 +52,14 @@ public class GeneticAlgorithm {
         int[] res = new int[popArray.size()];
         System.out.println("Result table:");
         int counter = 0;
+        int min = Integer.MAX_VALUE;
         for (String[] binaryString : popArray) {
             int[] intArray = convertToIntArray(binaryString);
             int fitness = 0;
             for (int j = 0; j < intArray.length - 1; j++) {
                 int weight = graph.getWeightedEdge(intArray[j], intArray[j + 1]);
                 if (intArray[0] != firstNode) {
-                    fitness += 10000000;
+                    fitness += 2000;
                 }
                 if (intArray[j] == endNode) {
                     break;
@@ -69,9 +70,12 @@ public class GeneticAlgorithm {
                 }
             }
             res[counter] = fitness;
+            if (fitness <= min) min = fitness;
             counter++;
         }
         for (int i : res) System.out.print(i + "\n");
+        System.out.println("Minimum fitness: " + min);
+
         return res;
 
     }

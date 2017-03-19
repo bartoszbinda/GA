@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Scanner;
 
 public class Initializer {
@@ -13,14 +14,20 @@ public class Initializer {
     private double crossoverRate;
     private String fileName;
     private int endNode;
-    public Initializer(String fileName) {
+    private int firstNode;
+
+    public Initializer(String fileName) throws FileNotFoundException {
         numNodes = 0;
         mutationRate = 0;
         curLine = 1;
         arrayCount = 0;
         this.fileName = fileName;
         crossoverRate = 0.1;
-        read();
+        try {
+            read();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean validate(double crossoverRate, double mutationRate) {
@@ -28,7 +35,7 @@ public class Initializer {
     }
 
 
-    public void read() {
+    public void read() throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Please enter mutation rate: ");
         mutationRate = sc.nextDouble();
@@ -36,13 +43,21 @@ public class Initializer {
         System.out.println("Please enter the crossover rate: ");
         crossoverRate = sc.nextDouble();
         sc.nextLine();
-        System.out.println("Please enter the number of vertices: ");
-        numVertices = sc.nextInt();
+        System.out.println("Enter the first node:");
+        int firstNode = sc.nextInt();
         sc.nextLine();
         System.out.println("Enter the end node");
         endNode = sc.nextInt();
         sc.nextLine();
-        graph = new AdjacencyMatrixGraph(numVertices, Graph.GraphType.DIRECTED);
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        try {
+            while (reader.readLine() != null) numVertices++;
+            reader.close();
+        } catch (Exception e) {
+
+        }
+
+        graph = new AdjacencyMatrixGraph(numVertices * 2, Graph.GraphType.DIRECTED);
         sc.close();
         if (validate(crossoverRate, mutationRate)) {
             try {
@@ -57,16 +72,8 @@ public class Initializer {
 
                     }
                     this.numNodes = curLine;
-//                    this.vertexSet = graph.vertexSet();
-//                    this.edgeSet = graph.edgeSet();
                     in.close();
-                    ///TODO: iterowanie sie i dostanie kazdego vertixa
-//                        for(DefaultWeightedEdge edge : edgeSet){
-//                            System.out.println(edge.toString());
-//                        }
-//                        for(String vertix : vertexSet){
-//                            System.out.println(vertix);
-//                        }
+
 
                 } catch (Exception e) {
                     System.out.println(e.toString());
@@ -91,21 +98,11 @@ public class Initializer {
         this.crossoverRate = crossoverRate;
     }
 
-//    public Set<Integer> getVertexSet() {
-//        return vertexSet;
-//    }
-//
-//    public Set<DefaultWeightedEdge> getEdgeSet() {
-//        return edgeSet;
-//    }
 
     public int getNumNodes() {
         return numNodes;
     }
 
-//    public SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> getGraph() {
-//        return graph;
-//    }
 
     public void setNumNodes(int numNodes) {
         this.numNodes = numNodes;
@@ -141,5 +138,9 @@ public class Initializer {
 
     public int getEndNode() {
         return this.endNode;
+    }
+
+    public int getFirstNode() {
+        return this.firstNode;
     }
 }

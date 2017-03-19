@@ -8,11 +8,13 @@ public class GeneticAlgorithm {
     private ArrayList<String[]> populationArray = new ArrayList<>();
     private AdjacencyMatrixGraph graph;
     private int endNode;
+    private int firstNode;
 
-    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode) {
+    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode) {
         this.numberOfIteration = 0;
         this.graph = graph;
         this.endNode = endNode;
+        this.firstNode = firstNode;
 
     }
 
@@ -55,7 +57,7 @@ public class GeneticAlgorithm {
             int fitness = 0;
             for (int j = 0; j < intArray.length - 1; j++) {
                 int weight = graph.getWeightedEdge(intArray[j], intArray[j + 1]);
-                if (intArray[0] == endNode) {
+                if (intArray[0] != firstNode) {
                     fitness += 10000000;
                 }
                 if (intArray[j] == endNode) {

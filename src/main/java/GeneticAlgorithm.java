@@ -1,21 +1,26 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneticAlgorithm {
 
 
+    Random r = new Random();
     private int numberOfIteration;
     private ArrayList<String[]> populationArray = new ArrayList<>();
     private AdjacencyMatrixGraph graph;
     private int endNode;
     private int firstNode;
+    private int numTournament;
+    private double crossoverRate;
 
-    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode) {
+    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode, int numTournament, double crossoverRate) {
         this.numberOfIteration = 0;
         this.graph = graph;
         this.endNode = endNode;
         this.firstNode = firstNode;
-
+        this.numTournament = numTournament;
+        this.crossoverRate = crossoverRate;
     }
 
     ArrayList<String[]> getPopulationArray() {
@@ -26,6 +31,27 @@ public class GeneticAlgorithm {
         return numberOfIteration;
     }
 
+    public String[] tournament(ArrayList<String[]> population, int[] fitness) {
+        ArrayList<String[]> tournamentPopulation = new ArrayList<>();
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < this.numTournament; i++) {
+            int random = r.nextInt(population.size());
+            tournamentPopulation.set(i, population.get(random));
+        }
+        int[] fitnessIndices = fitnessFunction(tournamentPopulation);
+        String[] tournamentIndividual = new String[1];
+        for (int i = 0; i < this.numTournament; i++) {
+            if (fitnessIndices[i] < min) {
+                min = fitnessIndices[i];
+                tournamentIndividual = tournamentPopulation.get(i);
+            }
+        }
+        return tournamentIndividual;
+    }
+
+    public String[] crossover(ArrayList<String[]> population, double crossoverRate) {
+        
+    }
     void initializePopulation(int numNodes, int amountOfPopulations) {
         int count = 0;
         while (count != amountOfPopulations) {

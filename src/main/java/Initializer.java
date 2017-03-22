@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Initializer {
@@ -9,20 +11,20 @@ public class Initializer {
     AdjacencyMatrixGraph graph;
     private int numNodes;
     private double mutationRate;
-    private int curLine;
     private int arrayCount;
     private double crossoverRate;
     private String fileName;
     private int endNode;
     private int firstNode;
+    private ArrayList<Integer> amountOfNodes;
 
     public Initializer(String fileName) throws FileNotFoundException {
         numNodes = 0;
         mutationRate = 0;
-        curLine = 1;
         arrayCount = 0;
         this.fileName = fileName;
         crossoverRate = 0.1;
+        amountOfNodes = new ArrayList<>();
         try {
             read();
         } catch (FileNotFoundException e) {
@@ -66,12 +68,15 @@ public class Initializer {
                 try {
                     while ((line = in.readLine()) != null) {
                         String[] parseArray = line.split(" ");
-                        graph.addEdge(Integer.parseInt(parseArray[0]), Integer.parseInt(parseArray[2]), Integer.parseInt(parseArray[1]));
-                        curLine++;
-
-
+                        int nodeOne = Integer.parseInt(parseArray[0]);
+                        int nodeTwo = Integer.parseInt(parseArray[2]);
+                        int weight = Integer.parseInt(parseArray[1]);
+                        graph.addEdge(nodeOne, nodeTwo, weight);
+                        amountOfNodes.add(nodeOne);
+                        amountOfNodes.add(nodeTwo);
                     }
-                    this.numNodes = curLine;
+
+                    this.numNodes = Collections.max(amountOfNodes);
                     in.close();
 
 
@@ -114,14 +119,6 @@ public class Initializer {
 
     public void setMutationRate(double mutationRate) {
         this.mutationRate = mutationRate;
-    }
-
-    public int getCurLine() {
-        return curLine;
-    }
-
-    public void setCurLine(int curLine) {
-        this.curLine = curLine;
     }
 
     public int getArrayCount() {

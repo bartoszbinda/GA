@@ -50,7 +50,8 @@ public class GeneticAlgorithm {
     }
 
     public String[] crossover(ArrayList<String[]> population, double crossoverRate) {
-        
+        String[] ls = new String[13];
+        return ls;
     }
     void initializePopulation(int numNodes, int amountOfPopulations) {
         int count = 0;

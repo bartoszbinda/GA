@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,6 +20,7 @@ public class GeneticAlgorithm {
     private int bestIndividualFitness;
     private int bestIndividualGenerationNumber;
     private ArrayList<Integer> allFitness;
+    private ArrayList<Integer> genFitness;
 
     GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode, int numTournament, double crossoverRate, double mutationRate) {
         this.numberOfIteration = 0;
@@ -31,6 +34,7 @@ public class GeneticAlgorithm {
         this.bestIndividualFitness = Integer.MAX_VALUE;
         this.bestIndividualGenerationNumber = 0;
         this.allFitness = new ArrayList<>();
+        this.genFitness = new ArrayList<>();
     }
 
     void initializePopulation(int numNodes, int amountOfPopulations) {
@@ -44,7 +48,7 @@ public class GeneticAlgorithm {
             populationArray.add(population);
             count++;
         }
-        this.numberOfIteration++;
+        setNumberOfIteration(this.numTournament++);
     }
 
 
@@ -107,7 +111,14 @@ public class GeneticAlgorithm {
         String[] tournamentChromosome = tournament(population, fitnessFunction(population));
         newPopulation.set(newPopulation.size() - 1, tournamentChromosome);
         this.populationArray = newPopulation;
+        setNumberOfIteration(this.numTournament++);
+        this.genFitness.clear();
     }
+
+    void setGenFitness(ArrayList<Integer> GenFitness) {
+        this.genFitness = GenFitness;
+    }
+
     int[] fitnessFunction(ArrayList<String[]> popArray) {
         int[] res = new int[popArray.size()];
         int counter = 0;
@@ -119,11 +130,14 @@ public class GeneticAlgorithm {
             for (int j = 0; j < intArray.length - 1; j++) {
                 int weight = graph.getWeightedEdge(intArray[j], intArray[j + 1]);
                 if (intArray[0] != firstNode) {
-                    fitness += 20;
+                    fitness += 100;
                 }
                 if (intArray[0] == endNode) {
                     fitness += 20;
+                } else if (intArray[j] == intArray[j + 1]) {
+                    fitness += 50;
                 }
+
                 if (intArray[j] == endNode) {
                     fitness += weight;
                     break;
@@ -135,12 +149,13 @@ public class GeneticAlgorithm {
             }
             res[counter] = fitness;
             allFitness.add(fitness);
+            genFitness.add(fitness);
             if (fitness <= min) {
                 min = fitness;
                 minIndex = counter;
             }
             int minFitness = getBestIndividualFitness();
-            if (fitness <= minFitness) {
+            if (fitness < minFitness) {
                 setBestIndividualFitness(fitness);
                 setBestIndividual(binaryString);
                 setBestIndividualGenerationNumber(getNumberOfIteration());
@@ -178,6 +193,10 @@ public class GeneticAlgorithm {
         return this.numberOfIteration;
     }
 
+    public void setNumberOfIteration(int numberOfIteration) {
+        this.numberOfIteration = numberOfIteration;
+    }
+
     private int[] convertToIntArray(String[] stringArray) {
         int[] intArray = new int[stringArray.length];
         for (int i = 0; i < intArray.length; i++) {
@@ -186,7 +205,18 @@ public class GeneticAlgorithm {
         return intArray;
     }
 
-    public void printResult() {
+    public void printGenResult() {
+        System.out.println();
+        System.out.println("In iteration number:");
+        System.out.println(this.bestIndividualGenerationNumber);
+        System.out.println("Best fitness:");
+        System.out.println(this.bestIndividualFitness);
+        BigInteger sum = sum(genFitness);
+        BigDecimal mean = new BigDecimal(sum.divide(BigInteger.valueOf(genFitness.size())));
+        System.out.println("Arithmetic mean: " + mean);
+    }
+
+    public void printEndResult() {
         System.out.println();
         System.out.println("BEST SOLUTION");
         System.out.println("best individual:");
@@ -200,8 +230,8 @@ public class GeneticAlgorithm {
         System.out.println(this.bestIndividualFitness);
         System.out.println("In iteration number:");
         System.out.println(this.bestIndividualGenerationNumber);
-        int sum = sum(allFitness);
-        double mean = sum / allFitness.size();
+        BigInteger sum = sum(allFitness);
+        BigDecimal mean = new BigDecimal(sum.divide(BigInteger.valueOf(allFitness.size())));
         System.out.println("Arithmetic mean: " + mean);
     }
 
@@ -225,12 +255,11 @@ public class GeneticAlgorithm {
         this.bestIndividualGenerationNumber = genNumber;
     }
 
-    public int sum(ArrayList<Integer> list) {
-        int sum = 0;
+    public BigInteger sum(ArrayList<Integer> list) {
+        BigInteger sum = new BigInteger(String.valueOf(0));
 
         for (int i : list)
-            sum = sum + i;
-
+            sum = sum.add(BigInteger.valueOf(i));
         return sum;
     }
 }

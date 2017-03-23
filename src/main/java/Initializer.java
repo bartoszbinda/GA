@@ -17,14 +17,23 @@ public class Initializer {
     private int endNode;
     private int firstNode;
     private ArrayList<Integer> amountOfNodes;
+    private int numPop;
+    private int tournamentNum;
+    private int limit;
+    private String filename;
 
-    public Initializer(String fileName) throws FileNotFoundException {
+
+    public Initializer() throws FileNotFoundException {
         numNodes = 0;
+        limit = 0;
+        numPop = 0;
+        tournamentNum = 0;
         mutationRate = 0;
         arrayCount = 0;
         this.fileName = fileName;
         crossoverRate = 0.1;
         amountOfNodes = new ArrayList<>();
+        fileName = "data.txt";
         try {
             read();
         } catch (FileNotFoundException e) {
@@ -39,6 +48,8 @@ public class Initializer {
 
     public void read() throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
+        System.out.println("please enter the name of file:");
+        setFilename(sc.nextLine().replace("\\w+", ""));
         System.out.println("Please enter mutation rate: ");
         mutationRate = sc.nextDouble();
         sc.nextLine();
@@ -50,7 +61,16 @@ public class Initializer {
         sc.nextLine();
         System.out.println("Enter the end node");
         endNode = sc.nextInt();
+        System.out.println("Please enter the number of population:");
+        setNumPop(sc.nextInt());
         sc.nextLine();
+        System.out.println("Please enter the maximum number of iterations: ");
+        setLimit(sc.nextInt());
+        sc.nextLine();
+        System.out.println("Please enter the number of chromosomes in tournament:");
+        setTournamentNum(sc.nextInt());
+        sc.nextLine();
+        sc.close();
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         try {
             while (reader.readLine() != null) numVertices++;
@@ -139,5 +159,33 @@ public class Initializer {
 
     public int getFirstNode() {
         return this.firstNode;
+    }
+
+    public int getNumPop() {
+        return numPop;
+    }
+
+    public void setNumPop(int numPop) {
+        this.numPop = numPop;
+    }
+
+    public int getTournamentNum() {
+        return tournamentNum;
+    }
+
+    public void setTournamentNum(int tournamentNum) {
+        this.tournamentNum = tournamentNum;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

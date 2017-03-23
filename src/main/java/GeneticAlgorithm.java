@@ -213,7 +213,7 @@ public class GeneticAlgorithm {
         System.out.println(this.bestIndividualFitness);
         BigInteger sum = sum(genFitness);
         BigDecimal mean = new BigDecimal(sum.divide(BigInteger.valueOf(genFitness.size())));
-        System.out.println("Arithmetic mean: " + mean);
+        System.out.println("Average mean: " + mean);
     }
 
     public void printEndResult() {

@@ -3,10 +3,6 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-//        System.out.println("Plese enter the name of file containg the graph: (without .txt)");
-//        Scanner sc = new Scanner(System.in);
-//        String fileName = sc.nextLine().replace("\\w+", "");
-//        sc.close();
         Initializer file = null;
         try {
             file = new Initializer();
@@ -25,15 +21,17 @@ public class Main {
         GeneticAlgorithm ga = new GeneticAlgorithm(file.getGraph(), endNode, firstNode,
                 numTournament, crossoverRate, mutationRate);
         ga.initializePopulation(numNodes, numPop);
-//        ga.fitnessFunction(ga.getPopulationArray());
-        while (iterationNum != 60) {
-            System.out.println("Number of iteration: " + iterationNum);
-            System.out.println();
+        ga.printPopulationArray();
+        ga.fitnessFunction(ga.getPopulationArray());
+        while (iterationNum != limit) {
+            System.out.print(iterationNum + " ");
             ArrayList<String[]> popArray = ga.getPopulationArray();
             ga.newPopulation(popArray);
             ga.fitnessFunction(ga.getPopulationArray());
+            ga.printPopulationArray();
             ga.printGenResult();
             iterationNum++;
+            System.out.println();
         }
         ga.fitnessFunction(ga.getPopulationArray());
         ga.printEndResult();

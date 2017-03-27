@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,7 +15,6 @@ public class GeneticAlgorithm {
     private int endNode;
     private int firstNode;
     private int numTournament;
-    private double crossoverRate;
     private double mutationRate;
     private String[] bestIndividual;
     private int bestIndividualFitness;
@@ -22,13 +22,12 @@ public class GeneticAlgorithm {
     private ArrayList<Integer> allFitness;
     private ArrayList<Integer> genFitness;
 
-    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode, int numTournament, double crossoverRate, double mutationRate) {
+    GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode, int numTournament, double mutationRate) {
         this.numberOfIteration = 0;
         this.graph = graph;
         this.endNode = endNode;
         this.firstNode = firstNode;
         this.numTournament = numTournament;
-        this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.bestIndividual = new String[0];
         this.bestIndividualFitness = Integer.MAX_VALUE;
@@ -37,6 +36,9 @@ public class GeneticAlgorithm {
         this.genFitness = new ArrayList<>();
     }
 
+    int getNumTournament() {
+        return this.numTournament;
+    }
     void initializePopulation(int numNodes, int amountOfPopulations) {
         int count = 0;
         while (count != amountOfPopulations) {
@@ -48,7 +50,8 @@ public class GeneticAlgorithm {
             populationArray.add(population);
             count++;
         }
-        setNumberOfIteration(this.numTournament++);
+        int numTournament = getNumTournament();
+        setNumberOfIteration(numTournament);
     }
 
 
@@ -70,48 +73,50 @@ public class GeneticAlgorithm {
         return tournamentIndividual;
     }
 
-    public ArrayList<String[]> crossover(ArrayList<String[]> population, double crossoverRate) {
-        for (int i = 0; i < population.size() - 1; i++) {
-            String[] firstChromosome = population.get(i);
-            String[] secondChromosome = population.get(i + 1);
-            for (int j = 0; j < secondChromosome.length; j++) {
-                if (r.nextDouble() < crossoverRate) {
-                    String temp = firstChromosome[j];
-                    firstChromosome[j] = secondChromosome[j];
-                    secondChromosome[j] = temp;
-                }
-            }
-        }
-        return population;
+    public String[] crossover(String[] parent1, String[] parent2) {
+        int splitID = ThreadLocalRandom.current().nextInt(0, parent1.length);
+        String[] child = new String[parent1.length];
+        System.arraycopy(parent1, 0, child, 0, splitID);
+        System.arraycopy(parent2, splitID, child, splitID, parent2.length - splitID);
+        return child;
     }
 
-    public ArrayList<String[]> mutation(ArrayList<String[]> population, double mutationRate) {
-        for (int i = 0; i < population.size() - 1; i++) {
-            String[] chromosome = population.get(i);
-            for (int j = 0; j < chromosome.length; j++) {
-                if (r.nextDouble() < mutationRate) {
-                    char[] binCharArray = chromosome[j].toCharArray();
-                    for (int z = 0; z < binCharArray.length; z++) {
-                        if (binCharArray[z] == '0') {
-                            binCharArray[z] = '1';
-                        } else {
-                            binCharArray[z] = '0';
-                        }
-                        chromosome[j] = String.valueOf(binCharArray);
+    public String[] mutation(String[] child) {
+        for (int j = 0; j < child.length; j++) {
+
+            char[] binCharArray = child[j].toCharArray();
+            for (int z = 0; z < binCharArray.length; z++) {
+                if (r.nextDouble() < getMutationRate()) {
+                    if (binCharArray[z] == '0') {
+                        binCharArray[z] = '1';
+                    } else {
+                        binCharArray[z] = '0';
                     }
+                    child[j] = String.valueOf(binCharArray);
+
                 }
             }
         }
-        return population;
+        return child;
     }
+
 
     void newPopulation(ArrayList<String[]> population) {
-        ArrayList<String[]> crossoverPopulation = crossover(population, crossoverRate);
-        ArrayList<String[]> newPopulation = mutation(crossoverPopulation, mutationRate);
-        String[] tournamentChromosome = tournament(population, fitnessFunction(population));
-        newPopulation.set(newPopulation.size() - 1, tournamentChromosome);
-        this.populationArray = newPopulation;
-        setNumberOfIteration(this.numTournament++);
+        int[] fitness = fitnessFunction(population);
+        int counter = 0;
+        ArrayList<String[]> newPopulation = new ArrayList<>();
+
+        while (counter != population.size()) {
+            String[] parent1 = tournament(population, fitness);
+            String[] parent2 = tournament(population, fitness);
+            String[] child = crossover(parent1, parent2);
+            child = mutation(child);
+            newPopulation.add(child);
+            counter++;
+        }
+        setPopulationArray(newPopulation);
+        int numTournament = getNumTournament();
+        setNumberOfIteration(numTournament++);
         this.genFitness.clear();
     }
 
@@ -127,24 +132,33 @@ public class GeneticAlgorithm {
         for (String[] binaryString : popArray) {
             int[] intArray = convertToIntArray(binaryString);
             int fitness = 0;
+            HashMap<Integer, Integer> map = new HashMap<>();
             for (int j = 0; j < intArray.length - 1; j++) {
-                int weight = graph.getWeightedEdge(intArray[j], intArray[j + 1]);
-                if (intArray[0] != firstNode) {
+                int weight = getGraph().getWeightedEdge(intArray[j], intArray[j + 1]);
+                if (map.get(intArray[j]) != null) {
+                    map.put(intArray[j], map.get(intArray[j]) + 1);
+                } else {
+                    map.put(intArray[j], 1);
+                }
+                if (map.get(intArray[j]) > 2) {
                     fitness += 100;
                 }
-                if (intArray[0] == endNode) {
-                    fitness += 20;
-                } else if (intArray[j] == intArray[j + 1]) {
-                    fitness += 50;
+                if (intArray[0] != getFirstNode()) {
+                    fitness += 3000;
+                }
+                if (intArray[j] == intArray[j + 1]) {
+                    fitness += 100;
+                }
+                if (weight == 0) {
+                    fitness += 3000;
                 }
 
-                if (intArray[j] == endNode) {
+                if (intArray[0] == getEndNode()) {
+                    fitness += 3000;
+                }
+                if (intArray[j] == getEndNode()) {
                     fitness += weight;
                     break;
-                } else if (weight > 0) {
-                    fitness += weight;
-                } else {
-                    fitness += 20;
                 }
             }
             res[counter] = fitness;
@@ -156,9 +170,9 @@ public class GeneticAlgorithm {
             }
             int minFitness = getBestIndividualFitness();
             if (fitness < minFitness) {
-                setBestIndividualFitness(fitness);
-                setBestIndividual(binaryString);
-                setBestIndividualGenerationNumber(getNumberOfIteration());
+                this.setBestIndividualFitness(fitness);
+                this.setBestIndividual(binaryString);
+                this.setBestIndividualGenerationNumber(getNumberOfIteration());
             }
 
             counter++;
@@ -187,6 +201,10 @@ public class GeneticAlgorithm {
 
     ArrayList<String[]> getPopulationArray() {
         return populationArray;
+    }
+
+    public void setPopulationArray(ArrayList<String[]> populationArray) {
+        this.populationArray = populationArray;
     }
 
     public int getNumberOfIteration() {
@@ -220,11 +238,12 @@ public class GeneticAlgorithm {
         System.out.println();
         System.out.println("BEST SOLUTION");
         System.out.println("best individual:");
-        System.out.print(this.bestIndividual[0] + " : ");
-        for (int i = 1; i < bestIndividual.length - 1; i++) {
+        String[] bestIndividualOfAllTime = this.getBestIndividual();
+        System.out.print(bestIndividualOfAllTime[0] + " : ");
+        for (int i = 1; i < bestIndividualOfAllTime.length - 1; i++) {
             System.out.print(this.bestIndividual[i] + " : ");
         }
-        System.out.println(bestIndividual[bestIndividual.length - 1]);
+        System.out.println(bestIndividualOfAllTime[bestIndividualOfAllTime.length - 1]);
         System.out.println();
         System.out.println("Best fitness:");
         System.out.println(this.bestIndividualFitness);
@@ -262,4 +281,22 @@ public class GeneticAlgorithm {
             sum = sum.add(BigInteger.valueOf(i));
         return sum;
     }
+
+    public AdjacencyMatrixGraph getGraph() {
+        return graph;
+    }
+
+    int getEndNode() {
+        return this.endNode;
+    }
+
+    int getFirstNode() {
+        return this.firstNode;
+    }
+
+    public double getMutationRate() {
+        return mutationRate;
+    }
+
+
 }

@@ -12,7 +12,6 @@ public class Initializer {
     private int numNodes;
     private double mutationRate;
     private int arrayCount;
-    private double crossoverRate;
     private String fileName;
     private int endNode;
     private int firstNode;
@@ -31,7 +30,6 @@ public class Initializer {
         mutationRate = 0;
         arrayCount = 0;
         this.fileName = fileName;
-        crossoverRate = 0.1;
         amountOfNodes = new ArrayList<>();
         fileName = "data.txt";
         try {
@@ -41,8 +39,8 @@ public class Initializer {
         }
     }
 
-    private boolean validate(double crossoverRate, double mutationRate) {
-        return crossoverRate >= 0 && crossoverRate <= 1.0 && mutationRate >= 0 && mutationRate <= 1;
+    private boolean validate(double mutationRate) {
+        return mutationRate >= 0 && mutationRate <= 1;
     }
 
 
@@ -52,9 +50,6 @@ public class Initializer {
         setFilename(sc.nextLine().replace("\\w+", ""));
         System.out.println("Please enter mutation rate: ");
         mutationRate = sc.nextDouble();
-        sc.nextLine();
-        System.out.println("Please enter the crossover rate: ");
-        crossoverRate = sc.nextDouble();
         sc.nextLine();
         System.out.println("Enter the first node:");
         int firstNode = sc.nextInt();
@@ -81,7 +76,7 @@ public class Initializer {
 
         graph = new AdjacencyMatrixGraph(numVertices * 2, Graph.GraphType.DIRECTED);
         sc.close();
-        if (validate(crossoverRate, mutationRate)) {
+        if (validate(mutationRate)) {
             try {
                 BufferedReader in = new BufferedReader(new java.io.FileReader("./" + fileName));
                 String line;
@@ -114,15 +109,6 @@ public class Initializer {
         }
 
     }
-
-    public double getCrossoverRate() {
-        return crossoverRate;
-    }
-
-    public void setCrossoverRate(double crossoverRate) {
-        this.crossoverRate = crossoverRate;
-    }
-
 
     public int getNumNodes() {
         return numNodes;

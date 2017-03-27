@@ -1,5 +1,4 @@
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +10,6 @@ public class Main {
         }
         int iterationNum = 1;
         int numNodes = file.getNumNodes();
-        double crossoverRate = file.getCrossoverRate();
         double mutationRate = file.getMutationRate();
         int limit = file.getLimit();
         int numPop = file.getNumPop();
@@ -19,14 +17,13 @@ public class Main {
         int endNode = file.getEndNode();
         int firstNode = file.getFirstNode();
         GeneticAlgorithm ga = new GeneticAlgorithm(file.getGraph(), endNode, firstNode,
-                numTournament, crossoverRate, mutationRate);
+                numTournament, mutationRate);
         ga.initializePopulation(numNodes, numPop);
         ga.printPopulationArray();
         ga.fitnessFunction(ga.getPopulationArray());
         while (iterationNum != limit) {
             System.out.print(iterationNum + " ");
-            ArrayList<String[]> popArray = ga.getPopulationArray();
-            ga.newPopulation(popArray);
+            ga.newPopulation(ga.getPopulationArray());
             ga.fitnessFunction(ga.getPopulationArray());
             ga.printPopulationArray();
             ga.printGenResult();

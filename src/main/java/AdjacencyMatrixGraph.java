@@ -19,21 +19,6 @@ public class AdjacencyMatrixGraph implements Graph {
         }
     }
 
-    public GraphType TypeofGraph() {
-        return graphType;
-    }
-
-    @Override
-    public void addEdge(int v1, int v2) {
-        if (v1 >= numVertices || v2 >= numVertices || v1 < 0 || v2 < 0) {
-            throw new IllegalArgumentException("Vertex number is not valid");
-        }
-        adjacencyMatrix[v1][v2] = 1;
-        if (graphType == GraphType.UNDIRECTED) {
-            adjacencyMatrix[v2][v1] = 1;
-        }
-    }
-
     @Override
     public void addEdge(int v1, int v2, int weight) {
         if (v1 >= numVertices || v2 >= numVertices || v1 < 0 || v2 < 0) {

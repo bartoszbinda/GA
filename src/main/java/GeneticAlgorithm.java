@@ -146,6 +146,9 @@ public class GeneticAlgorithm {
                 if (intArray[0] != getFirstNode()) {
                     fitness += 10 * penalty;
                 }
+                if (intArray[j] == getEndNode()) {
+                    break;
+                }
                 if (intArray[j] == intArray[j + 1]) {
                     fitness += 3 * penalty;
                 }
@@ -156,9 +159,7 @@ public class GeneticAlgorithm {
                 if (intArray[0] == getEndNode()) {
                     fitness += 10 * penalty;
                 }
-                if (intArray[j] == getEndNode()) {
-                    break;
-                }
+
             }
             res[counter] = fitness;
             allFitness.add(fitness);
@@ -246,7 +247,7 @@ public class GeneticAlgorithm {
         System.out.println();
         System.out.println("Best fitness:");
         System.out.println(getBestIndividualFitness());
-        System.out.println("In iteration number:");
+        System.out.println("In generation number:");
         System.out.println(getBestIndividualGenerationNumber());
         BigInteger sum = sum(allFitness);
         BigDecimal mean = new BigDecimal(sum.divide(BigInteger.valueOf(allFitness.size())));

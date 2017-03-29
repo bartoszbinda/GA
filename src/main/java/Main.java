@@ -1,6 +1,16 @@
-import java.io.FileNotFoundException;
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.swingViewer.Viewer;
 
+import java.io.FileNotFoundException;
 public class Main {
+    protected String styleSheet =
+            "node {" +
+                    "	fill-color: black;" +
+                    "}" +
+                    "node.marked {" +
+                    "	fill-color: red;" +
+                    "}";
+
     public static void main(String[] args) {
         Initializer file = null;
         try {
@@ -32,5 +42,15 @@ public class Main {
         }
         ga.fitnessFunction(ga.getPopulationArray());
         ga.printEndResult();
+        SingleGraph graphic = file.getGraphVisualisation();
+        int[] best = GeneticAlgorithm.convertToIntArray(ga.getBestIndividual());
+        for (int i : best) {
+            org.graphstream.graph.Node node = graphic.getNode(Integer.toString(i));
+            node.setAttribute("ui.class", "marked");
+            if (i == endNode) break;
+        }
+        Viewer view = graphic.display();
+
+
     }
 }

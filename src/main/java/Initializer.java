@@ -1,3 +1,7 @@
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,6 +11,13 @@ import java.util.Scanner;
 
 public class Initializer {
 
+    protected String styleSheet =
+            "node {" +
+                    "	fill-color: black;" +
+                    "}" +
+                    "node.marked {" +
+                    "	fill-color: red;" +
+                    "}";
     int numVertices;
     AdjacencyMatrixGraph graph;
     private int numNodes;
@@ -20,6 +31,7 @@ public class Initializer {
     private int tournamentNum;
     private int limit;
     private String filename;
+    private SingleGraph graphVisualisation = new SingleGraph("Genetic Algorithm");
 
 
     public Initializer() throws FileNotFoundException {
@@ -89,6 +101,19 @@ public class Initializer {
                         graph.addEdge(nodeOne, nodeTwo, weight);
                         amountOfNodes.add(nodeOne);
                         amountOfNodes.add(nodeTwo);
+                        graphVisualisation.setStrict(false);
+                        graphVisualisation.setAutoCreate(true);
+                        try {
+                            Edge edge = graphVisualisation.addEdge(parseArray[1], parseArray[0], parseArray[2]);
+                            edge.setAttribute("ui.label", edge.getId());
+                        } catch (Exception e) {
+                            System.out.println("Node is already created");
+                        }
+                    }
+                    graphVisualisation.addAttribute("ui.stylesheet", styleSheet);
+                    for (Node node : graphVisualisation) {
+                        node.addAttribute("ui.label", node.getId());
+                        node.addAttribute("ui.stylesheet", styleSheet);
                     }
 
                     this.numNodes = Collections.max(amountOfNodes);
@@ -174,4 +199,13 @@ public class Initializer {
     public void setFilename(String filename) {
         this.filename = filename;
     }
+
+    public SingleGraph getGraphVisualisation() {
+        return graphVisualisation;
+    }
+
+    public void setGraphVisualisation(SingleGraph graphVisualisation) {
+        this.graphVisualisation = graphVisualisation;
+    }
+
 }

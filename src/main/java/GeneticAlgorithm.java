@@ -36,6 +36,14 @@ public class GeneticAlgorithm {
         this.genFitness = new ArrayList<>();
     }
 
+    static public int[] convertToIntArray(String[] stringArray) {
+        int[] intArray = new int[stringArray.length];
+        for (int i = 0; i < intArray.length; i++) {
+            intArray[i] = Integer.parseInt(stringArray[i], 2);
+        }
+        return intArray;
+    }
+
     int getNumTournament() {
         return this.numTournament;
     }
@@ -199,30 +207,6 @@ public class GeneticAlgorithm {
         }
     }
 
-    ArrayList<String[]> getPopulationArray() {
-        return populationArray;
-    }
-
-    public void setPopulationArray(ArrayList<String[]> populationArray) {
-        this.populationArray = populationArray;
-    }
-
-    public int getNumberOfIteration() {
-        return this.numberOfIteration;
-    }
-
-    public void setNumberOfIteration(int numberOfIteration) {
-        this.numberOfIteration = numberOfIteration;
-    }
-
-    private int[] convertToIntArray(String[] stringArray) {
-        int[] intArray = new int[stringArray.length];
-        for (int i = 0; i < intArray.length; i++) {
-            intArray[i] = Integer.parseInt(stringArray[i], 2);
-        }
-        return intArray;
-    }
-
     public void printGenResult() {
         System.out.println();
         System.out.println("In iteration number:");
@@ -340,6 +324,22 @@ public class GeneticAlgorithm {
 
     void setGenFitness(ArrayList<Integer> GenFitness) {
         this.genFitness = GenFitness;
+    }
+
+    ArrayList<String[]> getPopulationArray() {
+        return populationArray;
+    }
+
+    public void setPopulationArray(ArrayList<String[]> populationArray) {
+        this.populationArray = populationArray;
+    }
+
+    public int getNumberOfIteration() {
+        return this.numberOfIteration;
+    }
+
+    public void setNumberOfIteration(int numberOfIteration) {
+        this.numberOfIteration = numberOfIteration;
     }
 
 

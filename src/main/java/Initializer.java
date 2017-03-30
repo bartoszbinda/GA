@@ -83,7 +83,7 @@ public class Initializer {
 
         }
         // numVertices * 2, *10 is for testing
-        graph = new AdjacencyMatrixGraph(numVertices * 10, Graph.GraphType.DIRECTED);
+        graph = new AdjacencyMatrixGraph(numVertices * 2, Graph.GraphType.DIRECTED);
         sc.close();
         if (validate(mutationRate)) {
             try {

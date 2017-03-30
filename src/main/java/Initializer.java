@@ -24,6 +24,7 @@ public class Initializer {
     private double mutationRate;
     private int arrayCount;
     private String fileName;
+
     private int endNode;
     private int firstNode;
     private ArrayList<Integer> amountOfNodes;
@@ -60,10 +61,10 @@ public class Initializer {
         mutationRate = sc.nextDouble();
         sc.nextLine();
         System.out.println("Enter the first node:");
-        int firstNode = sc.nextInt();
+        setFirstNode(sc.nextInt());
         sc.nextLine();
         System.out.println("Enter the end node");
-        endNode = sc.nextInt();
+        setEndNode(sc.nextInt());
         System.out.println("Please enter the number of population:");
         setNumPop(sc.nextInt());
         sc.nextLine();
@@ -100,8 +101,10 @@ public class Initializer {
                         graphVisualisation.setStrict(false);
                         graphVisualisation.setAutoCreate(true);
                         try {
-                            Edge edge = graphVisualisation.addEdge(parseArray[1], parseArray[0], parseArray[2]);
+                            Edge edge = graphVisualisation.addEdge(parseArray[0] + parseArray[2], parseArray[0], parseArray[2]);
+                            edge.addAttribute("length", Integer.parseInt(parseArray[1]));
                             edge.setAttribute("ui.label", edge.getId());
+                            edge.addAttribute("label", "" + (int) edge.getNumber("length"));
                         } catch (Exception e) {
                             System.out.println("Node is already created");
                         }
@@ -160,12 +163,24 @@ public class Initializer {
         return graph;
     }
 
+    public void setGraph(AdjacencyMatrixGraph graph) {
+        this.graph = graph;
+    }
+
     public int getEndNode() {
         return this.endNode;
     }
 
+    public void setEndNode(int endNode) {
+        this.endNode = endNode;
+    }
+
     public int getFirstNode() {
         return this.firstNode;
+    }
+
+    public void setFirstNode(int firstNode) {
+        this.firstNode = firstNode;
     }
 
     public int getNumPop() {
@@ -203,5 +218,30 @@ public class Initializer {
     public void setGraphVisualisation(SingleGraph graphVisualisation) {
         this.graphVisualisation = graphVisualisation;
     }
+
+    public int getNumVertices() {
+        return numVertices;
+    }
+
+    public void setNumVertices(int numVertices) {
+        this.numVertices = numVertices;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public ArrayList<Integer> getAmountOfNodes() {
+        return amountOfNodes;
+    }
+
+    public void setAmountOfNodes(ArrayList<Integer> amountOfNodes) {
+        this.amountOfNodes = amountOfNodes;
+    }
+
 
 }

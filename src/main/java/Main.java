@@ -46,7 +46,9 @@ public class Main {
         int[] best = GeneticAlgorithm.convertToIntArray(ga.getBestIndividual());
         for (int i : best) {
             org.graphstream.graph.Node node = graphic.getNode(Integer.toString(i));
-            node.setAttribute("ui.class", "marked");
+            if (node != null) {
+                node.setAttribute("ui.class", "marked");
+            }
             if (i == endNode) break;
         }
         Viewer view = graphic.display();

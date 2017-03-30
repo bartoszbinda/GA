@@ -2,6 +2,8 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.Viewer;
 
 import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Main {
     protected String styleSheet =
             "node {" +
@@ -10,11 +12,17 @@ public class Main {
                     "node.marked {" +
                     "	fill-color: red;" +
                     "}";
+    private String filename = "";
 
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("please enter the name of file:");
+        String filename = sc.nextLine();
+        System.out.println("Filename: " + filename);
+        filename = filename.replace("\\w+", "");
         Initializer file = null;
         try {
-            file = new Initializer();
+            file = new Initializer(filename);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -44,13 +52,16 @@ public class Main {
         ga.printEndResult();
         SingleGraph graphic = file.getGraphVisualisation();
         int[] best = GeneticAlgorithm.convertToIntArray(ga.getBestIndividual());
-        for (int i : best) {
-            org.graphstream.graph.Node node = graphic.getNode(Integer.toString(i));
-            node.setAttribute("ui.class", "marked");
-            if (i == endNode) break;
-        }
+//        for(int i : best){
+//            Node node = graphic.getNode(Integer.toString(i));
+//            node.setAttribute("ui.class", "marked");
+//            if(i == endNode) break;
+//        }
         Viewer view = graphic.display();
 
+    }
 
+    public String getFilename() {
+        return filename;
     }
 }

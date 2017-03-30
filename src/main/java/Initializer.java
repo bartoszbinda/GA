@@ -30,11 +30,11 @@ public class Initializer {
     private int numPop;
     private int tournamentNum;
     private int limit;
-    private String filename;
+    private String filename = "";
     private SingleGraph graphVisualisation = new SingleGraph("Genetic Algorithm");
 
 
-    public Initializer() throws FileNotFoundException {
+    public Initializer(String filename) throws FileNotFoundException {
         numNodes = 0;
         limit = 0;
         numPop = 0;
@@ -43,7 +43,6 @@ public class Initializer {
         arrayCount = 0;
         this.fileName = fileName;
         amountOfNodes = new ArrayList<>();
-        fileName = "data.txt";
         try {
             read();
         } catch (FileNotFoundException e) {
@@ -56,10 +55,9 @@ public class Initializer {
     }
 
 
+
     public void read() throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
-        System.out.println("please enter the name of file:");
-        setFilename(sc.nextLine().replace("\\w+", ""));
         System.out.println("Please enter mutation rate: ");
         mutationRate = sc.nextDouble();
         sc.nextLine();
@@ -86,7 +84,7 @@ public class Initializer {
 
         }
 
-        graph = new AdjacencyMatrixGraph(numVertices * 2, Graph.GraphType.DIRECTED);
+        graph = new AdjacencyMatrixGraph(numVertices * numVertices, Graph.GraphType.DIRECTED);
         sc.close();
         if (validate(mutationRate)) {
             try {
@@ -105,6 +103,7 @@ public class Initializer {
                         graphVisualisation.setAutoCreate(true);
                         try {
                             Edge edge = graphVisualisation.addEdge(parseArray[1], parseArray[0], parseArray[2]);
+                            edge.addAttribute("length", parseArray[1]);
                             edge.setAttribute("ui.label", edge.getId());
                         } catch (Exception e) {
                             System.out.println("Node is already created");

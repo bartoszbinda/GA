@@ -30,9 +30,7 @@ public class Initializer {
     private int numPop;
     private int tournamentNum;
     private int limit;
-    private String filename;
     private SingleGraph graphVisualisation = new SingleGraph("Genetic Algorithm");
-
 
     public Initializer() throws FileNotFoundException {
         numNodes = 0;
@@ -58,8 +56,6 @@ public class Initializer {
 
     public void read() throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
-        System.out.println("please enter the name of file:");
-        setFilename(sc.nextLine().replace("\\w+", ""));
         System.out.println("Please enter mutation rate: ");
         mutationRate = sc.nextDouble();
         sc.nextLine();
@@ -85,8 +81,8 @@ public class Initializer {
         } catch (Exception e) {
 
         }
-
-        graph = new AdjacencyMatrixGraph(numVertices * 2, Graph.GraphType.DIRECTED);
+        // numVertices * 2, *10 is for testing
+        graph = new AdjacencyMatrixGraph(numVertices * 10, Graph.GraphType.DIRECTED);
         sc.close();
         if (validate(mutationRate)) {
             try {
@@ -196,8 +192,8 @@ public class Initializer {
         this.limit = limit;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setFilename(String fileName) {
+        this.fileName = fileName;
     }
 
     public SingleGraph getGraphVisualisation() {

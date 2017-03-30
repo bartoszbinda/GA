@@ -20,7 +20,8 @@ public class GeneticAlgorithm {
     private int bestIndividualGenerationNumber;
     private ArrayList<Integer> allFitness;
     private ArrayList<Integer> genFitness;
-
+    private long startTime;
+    private long endTime;
     GeneticAlgorithm(AdjacencyMatrixGraph graph, int endNode, int firstNode, int numTournament, double mutationRate) {
         this.numberOfIteration = 0;
         this.graph = graph;
@@ -31,6 +32,8 @@ public class GeneticAlgorithm {
         this.mutationRate = mutationRate;
         this.bestIndividual = new String[0];
         this.bestIndividualFitness = Integer.MAX_VALUE;
+        this.startTime = System.currentTimeMillis();
+        this.endTime = Long.MAX_VALUE;
         this.bestIndividualGenerationNumber = 0;
         this.allFitness = new ArrayList<>();
         this.genFitness = new ArrayList<>();
@@ -181,6 +184,8 @@ public class GeneticAlgorithm {
                 this.setBestIndividualFitness(fitness);
                 this.setBestIndividual(binaryString);
                 this.setBestIndividualGenerationNumber(getNumberOfIteration());
+                this.setEndTime(System.currentTimeMillis());
+
             }
 
             counter++;
@@ -236,6 +241,7 @@ public class GeneticAlgorithm {
         BigInteger sum = sum(allFitness);
         BigDecimal mean = new BigDecimal(sum.divide(BigInteger.valueOf(allFitness.size())));
         System.out.println("Arithmetic mean: " + mean);
+        System.out.println("Execution time: " + (getEndTime() - getStartTime()) + "ms");
     }
 
     public int getBestIndividualFitness() {
@@ -342,5 +348,20 @@ public class GeneticAlgorithm {
         this.numberOfIteration = numberOfIteration;
     }
 
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
 
 }
